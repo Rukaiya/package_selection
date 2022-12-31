@@ -13,6 +13,9 @@ class Packages(models.Model):
         managed = False
         db_table = 'packages'
 
+    def __str__(self) -> str:
+        return self.name
+
 
 class Services(models.Model):
     name = models.CharField(max_length=100)
@@ -25,3 +28,6 @@ class Services(models.Model):
     class Meta:
         managed = False
         db_table = 'services'
+
+    def __str__(self) -> str:
+        return self.name
