@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import json
+from collections import Counter
 
 from .forms import CreateUserForm
 from .models import Packages, Services
@@ -66,17 +67,36 @@ def Home(request):
     if request.method == 'POST':
         services = request.POST.getlist('services_list')
         package_list = []
+        addon_list = []
+        others_list = []
+        service_list = []
         for service in services:
-            print(service)
             service = Services.objects.get(name=service)
             details = json.loads(service.details) 
-            # print(details.get('is_service'))
+            
             if details.get('is_service') != None:
                 if details['is_service'] == True:
+                    service_list.append(service.id)
                     package = Packages.objects.filter(service_ids__contains=service.id)
-                    package_list.append(package)
-            print(package_list)
-        return redirect('home')
+                    package_list.extend(package)
+                    
+            elif details.get('is_addon') != None:
+                if details['is_addon'] == True:
+                    addon_list.append(service)
+            else:
+                others_list.append(service)
+                
+        package_list = Counter(package_list).most_common(1)
+        total_price = 0
+        for addon in addon_list:
+            total_price += addon.price
+        if len(package_list) != 0:
+            total_price += package_list[0][0].price
+            package_list = package_list[0][0]
+        else:
+            package_list = []
+        context = {'package_list': package_list, 'addon_list': addon_list, 'others_list': others_list, 'total_price': total_price}
+        return render(request, 'package/package_suggestion.html', context)
 
     context = {'service_list': service_list}
     return render(request, 'package/home.html', context)

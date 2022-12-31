@@ -1,0 +1,45 @@
+{% extends 'package/base.html'%}
+{% load widget_tweaks %}
+
+{% block content %}
+{% include 'package/navbar.html'%}
+
+  <div class="col-8 mx-auto mt-3">
+    <h2>Package</h2>
+    <hr>
+    <div class="row mb-5">
+      <div class="col-8">
+        <h5>{{package_list}}</h5>
+      </div>
+      <div class="col-4">
+        <h2>tk. <strong>{{package_list.price}}</strong></h2>
+      </div> 
+      
+    </div>
+    <div class="row mb-3">
+      <h2>Addons</h2>
+      <hr>
+      {% for addon in addon_list %}
+        <div class="col-8">
+          <h5>{{addon.name}}</h5>
+        </div>
+        <div class="col-4">
+          <h2>tk. <strong>{{addon.price}}</strong></h2>
+        </div>
+      {% endfor%}
+    </div>
+    <hr>
+    <div class="row mb-3 my-auto">
+      <div class="col-8" align="right">
+        <h4>Total</h4>
+      </div>
+      <div class="col-4"">
+        <h2>tk. <strong>{{total_price}}</strong></h2>
+      </div> 
+      
+    </div>
+
+  
+  </div>
+
+{% endblock content %}
